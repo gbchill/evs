@@ -41,20 +41,38 @@ export default function LoginPage() {
 	const redirectTo = searchParams.get('redirectTo') || '/'
 
 	return (
-		<div className="flex min-h-full flex-col justify-center pb-32 pt-20">
-			<div className="mx-auto w-full max-w-md">
-				<div className="flex flex-col gap-3 text-center">
-					<h1 className="text-h1">Welcome back!</h1>
-					<p className="text-body-md text-muted-foreground">
-						Please enter your details.
-					</p>
+		<div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-2">
+			{/* Left brand panel */}
+			<div className="hidden flex-col justify-between bg-indigo-600 p-12 text-white lg:flex">
+				<div className="text-h5 font-bold">TrotTrack</div>
+				<div>
+					<blockquote className="text-body-lg font-medium leading-relaxed">
+						"Coordinating our therapy horse sessions used to take hours of emails.
+						Now it takes minutes."
+					</blockquote>
+					<p className="mt-4 text-indigo-200">— Program Coordinator, Tumbling T Ranch</p>
 				</div>
-				<Spacer size="xs" />
-				{data.unverified ? (
-					<Verifier redirectTo={redirectTo} />
-				) : (
-					<InlineLogin redirectTo={redirectTo} formError={data.formError} />
-				)}
+				<p className="text-body-xs text-indigo-200">
+					Volunteer scheduling for animal-assisted therapy nonprofits.
+				</p>
+			</div>
+
+			{/* Right form panel */}
+			<div className="flex flex-col items-center justify-center px-4 py-16">
+				<div className="w-full max-w-sm">
+					<div className="mb-8 flex flex-col gap-2">
+						<h1 className="text-h3">Welcome back</h1>
+						<p className="text-body-sm text-muted-foreground">
+							Sign in to your account to continue.
+						</p>
+					</div>
+					<Spacer size="xs" />
+					{data.unverified ? (
+						<Verifier redirectTo={redirectTo} />
+					) : (
+						<InlineLogin redirectTo={redirectTo} formError={data.formError} />
+					)}
+				</div>
 			</div>
 		</div>
 	)
