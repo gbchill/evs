@@ -77,8 +77,8 @@ export const links: LinksFunction = () => {
 
 export const meta: V2_MetaFunction = () => {
 	return [
-		{ title: 'The Barn - Volunteer Portal' },
-		{ name: 'description', content: 'Equestrian Volunteer Coordinator' },
+		{ title: 'TrotTrack' },
+		{ name: 'description', content: 'Volunteer scheduling for animal-assisted therapy nonprofits' },
 	]
 }
 
