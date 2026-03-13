@@ -49,6 +49,22 @@ authenticator.use(
 	FormStrategy.name,
 )
 
+export async function requireOrgMember(
+	request: Request,
+	{ redirectTo }: { redirectTo?: string | null } = {},
+) {
+	const userId = await requireUserId(request, { redirectTo })
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: { orgId: true },
+	})
+	if (!user?.orgId) {
+		// User exists but has no org — send them to pick/create one
+		throw redirect('/org-setup')
+	}
+	return { userId, orgId: user.orgId }
+}
+
 export async function requireUserId(
 	request: Request,
 	{ redirectTo }: { redirectTo?: string | null } = {},

@@ -19,6 +19,19 @@ async function seed() {
 	deleteAllData()
 	console.timeEnd('🧹 Cleaned up the database...')
 
+	console.time(`🏠 Created default organization...`)
+	const defaultOrg = await prisma.organization.create({
+		data: {
+			name: 'Tumbling T Ranch',
+			slug: 'tumbling-t-ranch',
+			animalType: 'horses',
+			description: 'Equestrian therapy nonprofit for individuals with disabilities',
+			website: 'https://www.thebarnaz.com',
+			isActive: true,
+		},
+	})
+	console.timeEnd(`🏠 Created default organization...`)
+
 	console.time(`👑 Created admin role/permission...`)
 	const adminRole = await prisma.role.create({
 		data: {
@@ -29,6 +42,17 @@ async function seed() {
 		},
 	})
 	console.timeEnd(`👑 Created admin role/permission...`)
+
+	console.time(`🌐 Created superAdmin role/permission...`)
+	const superAdminRole = await prisma.role.create({
+		data: {
+			name: 'superAdmin',
+			permissions: {
+				create: { name: 'superAdmin' },
+			},
+		},
+	})
+	console.timeEnd(`🌐 Created superAdmin role/permission...`)
 
 	console.time(`Created lesson assistant role/permission...`)
 	const lessonAssistantRole = await prisma.role.create({
@@ -71,6 +95,7 @@ async function seed() {
 			const user = await prisma.user.create({
 				data: {
 					...userData,
+					orgId: defaultOrg.id,
 					password: {
 						create: createPassword(userData.username),
 					},
@@ -101,6 +126,7 @@ async function seed() {
 			email: 'kody@kcd.dev',
 			username: 'kody',
 			name: 'Kody',
+			orgId: defaultOrg.id,
 			roles: { connect: { id: adminRole.id } },
 			image: {
 				create: {
@@ -133,6 +159,7 @@ async function seed() {
 			email: 'bob@not.admin',
 			username: 'bob',
 			name: 'Bob',
+			orgId: defaultOrg.id,
 			image: {
 				create: {
 					contentType: 'image/png',
@@ -163,6 +190,7 @@ async function seed() {
 			email: 'isabelle@is.instructor',
 			username: 'isabelle',
 			name: 'Isabelle',
+			orgId: defaultOrg.id,
 			roles: { connect: { id: instructorRole.id } },
 			image: {
 				create: {
@@ -195,6 +223,7 @@ async function seed() {
 			const horse = await prisma.horse.create({
 				data: {
 					...horseData,
+					orgId: defaultOrg.id,
 					image: {
 						create: {
 							contentType: 'image/jpeg',
@@ -230,6 +259,7 @@ async function seed() {
 			const event = await prisma.event.create({
 				data: {
 					...eventData,
+					orgId: defaultOrg.id,
 				},
 			})
 			return event
