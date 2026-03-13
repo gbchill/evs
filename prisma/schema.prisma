@@ -20,9 +20,9 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users  User[]
-  horses Horse[]
-  events Event[]
+  users   User[]
+  animals Animal[]
+  events  Event[]
 }
 
 
@@ -45,8 +45,8 @@ model Image {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user  User?
-  horse Horse?
+  user   User?
+  animal Animal?
 }
 
 model Role {
@@ -98,13 +98,13 @@ model User {
 
   lastLogin DateTime? @default(now())
 
-  Instructor      Event[] @relation("instructor")
-  cleaningCrew    Event[] @relation("cleaningCrew")
-  lessonAssistant Event[] @relation("lessonAssistant")
-  sideWalker      Event[] @relation("sideWalker")
-  horseLeader     Event[] @relation("horseLeader")
+  Instructor       Event[] @relation("instructor")
+  cleaningCrew     Event[] @relation("cleaningCrew")
+  lessonAssistant  Event[] @relation("lessonAssistant")
+  sideWalker       Event[] @relation("sideWalker")
+  animalHandler    Event[] @relation("animalHandler")
 
-  horseAssignments HorseAssignment[]
+  animalAssignments AnimalAssignment[]
 }
 
 model Password {
@@ -150,9 +150,10 @@ model Session {
   expirationDate DateTime
 }
 
-model Horse {
+model Animal {
   id                String    @id @unique @default(cuid())
   name              String
+  species           String    @default("horse")
   notes             String?
   status            String?
   updatedAt         DateTime  @updatedAt
@@ -167,7 +168,7 @@ model Horse {
   imageId String? @unique
 
   events          Event[]
-  HorseAssignment HorseAssignment[]
+  AnimalAssignment AnimalAssignment[]
 }
 
 model Event {
@@ -191,24 +192,24 @@ model Event {
   sideWalkers    User[] @relation("sideWalker")
   sideWalkersReq Int    @default(0)
 
-  horseLeaders    User[] @relation("horseLeader")
-  horseLeadersReq Int    @default(0)
+  animalHandlers    User[] @relation("animalHandler")
+  animalHandlersReq Int    @default(0)
 
-  horses Horse[]
+  animals Animal[]
 
-  horseAssignments HorseAssignment[]
+  animalAssignments AnimalAssignment[]
 
   isPrivate Boolean @default(false)
 }
 
-model HorseAssignment {
+model AnimalAssignment {
   id        String @id @unique @default(cuid())
   event     Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   volunteer User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  horse     Horse  @relation(fields: [horseId], references: [id], onDelete: Cascade)
+  animal    Animal @relation(fields: [animalId], references: [id], onDelete: Cascade)
   eventId   String
   userId    String
-  horseId   String
+  animalId  String
 
   @@unique([eventId, userId])
 }
