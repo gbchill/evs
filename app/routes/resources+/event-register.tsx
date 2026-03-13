@@ -20,7 +20,7 @@ const volunteerTypes = [
 	'cleaningCrew',
 	'lessonAssistants',
 	'sideWalkers',
-	'horseLeaders',
+	'animalHandlers',
 ] as const
 
 const EventRegistrationSchema = z.object({
@@ -108,8 +108,8 @@ export async function action({ request }: DataFunctionArgs) {
 			throw json({ error: 'Missing permissions' }, { status: 403 })
 		}
 	}
-	if (submission.value.role == 'horseLeaders') {
-		if (!user.roles.find(role => role.name === 'horseLeader')) {
+	if (submission.value.role == 'animalHandlers') {
+		if (!user.roles.find(role => role.name === 'animalHandler')) {
 			throw json({ error: 'Missing permissions' }, { status: 403 })
 		}
 	}
@@ -234,7 +234,7 @@ async function notifyAdmins({
 	orgId,
 }: {
 	event: Event
-	role: 'cleaningCrew' | 'lessonAssistants' | 'sideWalkers' | 'horseLeaders'
+	role: 'cleaningCrew' | 'lessonAssistants' | 'sideWalkers' | 'animalHandlers'
 	action: 'register' | 'unregister'
 	user: User
 	orgId: string

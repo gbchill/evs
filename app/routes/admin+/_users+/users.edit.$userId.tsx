@@ -119,9 +119,9 @@ export async function action({ request, params }: DataFunctionArgs) {
 		roleDisconnectArray.push({ name: 'instructor' })
 	}
 	if (isHorseLeader) {
-		roleConnectArray.push({ name: 'horseLeader' })
+		roleConnectArray.push({ name: 'animalHandler' })
 	} else {
-		roleDisconnectArray.push({ name: 'horseLeader' })
+		roleDisconnectArray.push({ name: 'animalHandler' })
 	}
 	if (isLessonAssistant) {
 		roleConnectArray.push({ name: 'lessonAssistant' })
@@ -219,7 +219,7 @@ export default function EditUser() {
 		if (role.name === 'lessonAssistant') {
 			isLessonAssistant = true
 		}
-		if (role.name === 'horseLeader') {
+		if (role.name === 'animalHandler') {
 			isHorseLeader = true
 		}
 		if (role.name === 'instructor') {
@@ -414,7 +414,7 @@ export default function EditUser() {
 							<CheckboxField
 								labelProps={{
 									htmlFor: fields.isHorseLeader.id,
-									children: 'Horse Leader',
+									children: 'Animal Handler',
 								}}
 								buttonProps={{
 									...conform.input(fields.isHorseLeader, {

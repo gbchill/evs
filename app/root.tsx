@@ -316,9 +316,9 @@ function AdminDropdown() {
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem asChild>
-						<Link prefetch="intent" to={`/admin/horses`}>
+						<Link prefetch="intent" to={`/admin/animals`}>
 							<Icon className="text-body-md" name="horse">
-								Horses
+								Animals
 							</Icon>
 						</Link>
 					</DropdownMenuItem>

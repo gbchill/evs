@@ -29,7 +29,7 @@ const emailFormSchema = z
 	.object({
 		allVolunteers: checkboxSchema(),
 		lessonAssistant: checkboxSchema(),
-		horseLeader: checkboxSchema(),
+		animalHandler: checkboxSchema(),
 		instructor: checkboxSchema(),
 		subject: z
 			.string()
@@ -60,7 +60,7 @@ export async function action({ request, params }: DataFunctionArgs) {
 	const roles = [
 		'allVolunteers',
 		'lessonAssistant',
-		'horseLeader',
+		'animalHandler',
 		'instructor',
 	]
 	const selectedRoles = roles.filter(role => submission.payload[role] === 'on')
@@ -184,13 +184,13 @@ export default function Email() {
 						/>
 						<CheckboxField
 							labelProps={{
-								htmlFor: fields.horseLeader.id,
-								children: 'Horse Leaders',
+								htmlFor: fields.animalHandler.id,
+								children: 'Animal Handlers',
 							}}
 							buttonProps={{
-								...conform.input(fields.horseLeader, { type: 'checkbox' }),
+								...conform.input(fields.animalHandler, { type: 'checkbox' }),
 							}}
-							errors={fields.horseLeader.errors}
+							errors={fields.animalHandler.errors}
 						/>
 						<CheckboxField
 							labelProps={{
