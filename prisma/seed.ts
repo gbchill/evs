@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import {
 	createPassword,
 	createUser,
-	createHorse,
+	createAnimal,
 	createEvent,
 } from 'tests/db-utils.ts'
 import { prisma } from '~/utils/db.server.ts'
@@ -65,16 +65,16 @@ async function seed() {
 	})
 	console.timeEnd(`Created lesson assistant role/permission...`)
 
-	console.time(`Created horse leader role/permission...`)
-	const horseLeaderRole = await prisma.role.create({
+	console.time(`Created animal handler role/permission...`)
+	const animalHandlerRole = await prisma.role.create({
 		data: {
-			name: 'horseLeader',
+			name: 'animalHandler',
 			permissions: {
-				create: { name: 'horseLeader' },
+				create: { name: 'animalHandler' },
 			},
 		},
 	})
-	console.timeEnd(`Created horse leader role/permission...`)
+	console.timeEnd(`Created animal handler role/permission...`)
 
 	console.time(`Created instructor role/permission...`)
 	const instructorRole = await prisma.role.create({
@@ -219,10 +219,10 @@ async function seed() {
 	console.time(`🐴 Created ${totalHorses} horses...`)
 	const horses = await Promise.all(
 		Array.from({ length: totalHorses }, async (_, index) => {
-			const horseData = createHorse()
-			const horse = await prisma.horse.create({
+			const animalData = createAnimal()
+			const animal = await prisma.animal.create({
 				data: {
-					...horseData,
+					...animalData,
 					org: { connect: { id: defaultOrg.id } },
 					image: {
 						create: {
@@ -238,7 +238,7 @@ async function seed() {
 					},
 				},
 			})
-			return horse
+			return animal
 		}),
 	)
 	console.timeEnd(`🐴 Created ${totalHorses} horses...`)
@@ -267,13 +267,13 @@ async function seed() {
 	)
 	console.timeEnd(`📅 Created a few events in the current month`)
 
-	console.time(`Setting signup password to "horses are cool"`)
+	console.time(`Setting signup password to "animals are cool"`)
 	await prisma.signupPassword.create({
 			data: {
-				hash: await getPasswordHash('horses are cool'),
+				hash: await getPasswordHash('animals are cool'),
 			}
 	})
-	console.timeEnd(`Setting signup password to "horses are cool"`)
+	console.timeEnd(`Setting signup password to "animals are cool"`)
 
 	console.timeEnd(`🌱 Database has been seeded`)
 
