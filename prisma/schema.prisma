@@ -7,6 +7,25 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Organization {
+  id          String   @id @unique @default(cuid())
+  name        String
+  slug        String   @unique
+  animalType  String   @default("mixed")
+  description String?
+  logoUrl     String?
+  website     String?
+  isActive    Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users  User[]
+  horses Horse[]
+  events Event[]
+}
+
+
 model File {
   id   String @id @unique @default(cuid())
   blob Bytes
@@ -58,6 +77,9 @@ model User {
   name        String?
   phone       String?
   mailingList Boolean @default(true)
+
+  org   Organization? @relation(fields: [orgId], references: [id])
+  orgId String?
 
   birthdate         DateTime?
   height            Int?
@@ -138,6 +160,9 @@ model Horse {
   cooldownStartDate DateTime?
   cooldownEndDate   DateTime?
 
+  org   Organization? @relation(fields: [orgId], references: [id])
+  orgId String?
+
   image   Image?  @relation(fields: [imageId], references: [fileId])
   imageId String? @unique
 
@@ -151,6 +176,9 @@ model Event {
 
   start DateTime
   end   DateTime
+
+  org   Organization? @relation(fields: [orgId], references: [id])
+  orgId String?
 
   instructors User[] @relation("instructor")
 
