@@ -49,17 +49,14 @@ export default function Index() {
 						</div>
 						<div className="lg:pt-18 relative flex flex-col items-center px-4 pb-8 pt-8 sm:px-6 sm:pb-14 sm:pt-16 lg:px-8 lg:pb-20">
 							<h1 className="text-center text-5xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
-								<a
-									className="block uppercase text-brand-secondary drop-shadow-md"
-									href="https://www.thebarnaz.com"
-								>
-									The Barn: Volunteer Portal
-								</a>
+								<span className="block uppercase text-brand-secondary drop-shadow-md">
+									TrotTrack
+								</span>
 							</h1>
 							<p className="mx-auto mt-6 max-w-lg bg-slate-500 px-5 text-center text-xl font-semibold text-white sm:max-w-3xl">
-								Equestrian Volunteer Scheduling Application
+								Volunteer scheduling for animal-assisted therapy nonprofits
 							</p>
-							<div className="mt-8 flex justify-center">
+							<div className="mt-8 flex flex-wrap justify-center gap-4">
 								{user ? (
 									<Button
 										asChild
@@ -67,12 +64,17 @@ export default function Index() {
 										variant="default"
 										className="font-bold"
 									>
-										<Link to="/calendar">🐴 Go to Calendar</Link>
+										<Link to="/calendar">Go to Calendar</Link>
 									</Button>
 								) : (
-									<Button asChild size="wide" variant="default">
-										<Link to="/signup">Sign up to Volunteer</Link>
-									</Button>
+									<>
+										<Button asChild size="wide" variant="default">
+											<Link to="/signup">Sign up to Volunteer</Link>
+										</Button>
+										<Button asChild size="wide" variant="outline" className="bg-white text-black">
+											<Link to="/org-signup">Register Your Organization</Link>
+										</Button>
+									</>
 								)}
 							</div>
 						</div>
