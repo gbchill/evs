@@ -300,25 +300,54 @@ export default function Schedule() {
 		[],
 	)
 
+	const upcomingCount = events.filter(e => e.start.valueOf() > new Date().valueOf()).length
+	const needsHelpCount = eventsThatNeedHelp.length
+
 	return (
-		<div className="grid place-items-center gap-2">
-			<h1 className="mb-3 text-5xl">Calendar</h1>
-			<div className="mb-0 flex gap-2">
-				<Checkbox
-					checked={filterFlag}
-					onCheckedChange={() => setFilterFlag(!filterFlag)}
-					id="filter"
-				/>
-				<Label htmlFor="filter">
-					Show only events that need more volunteers
-				</Label>
+		<div className="flex flex-col gap-4 px-4 py-6">
+			{/* Page header */}
+			<div className="flex items-center justify-between">
+				<div>
+					<h1 className="text-h3">Calendar</h1>
+					<p className="mt-1 text-body-sm text-muted-foreground">
+						Schedule events and manage volunteer assignments
+					</p>
+				</div>
+				{userIsAdmin ? (
+					<CreateEventDialog animals={animals} instructors={instructors} />
+				) : null}
 			</div>
 
-			{userIsAdmin ? (
-				<CreateEventDialog animals={animals} instructors={instructors} />
-			) : null}
+			{/* Stat cards */}
+			<div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+				<div className="rounded-xl border border-border bg-background p-4">
+					<p className="text-body-2xs font-semibold uppercase tracking-wider text-muted-foreground">
+						Upcoming Events
+					</p>
+					<p className="mt-1 text-h4">{upcomingCount}</p>
+				</div>
+				<div className="rounded-xl border border-border bg-background p-4">
+					<p className="text-body-2xs font-semibold uppercase tracking-wider text-muted-foreground">
+						Need Volunteers
+					</p>
+					<p className={`mt-1 text-h4 ${needsHelpCount > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+						{needsHelpCount}
+					</p>
+				</div>
+				<div className="col-span-2 sm:col-span-1 flex items-center gap-3 rounded-xl border border-border bg-background p-4">
+					<Checkbox
+						checked={filterFlag}
+						onCheckedChange={() => setFilterFlag(!filterFlag)}
+						id="filter"
+					/>
+					<Label htmlFor="filter" className="cursor-pointer text-body-sm">
+						Show only events needing volunteers
+					</Label>
+				</div>
+			</div>
 
-			<div className="flex h-screen w-full justify-center">
+			{/* Calendar */}
+			<div className="flex h-[calc(100vh-16rem)] w-full">
 				<Calendar
 					localizer={localizer}
 					events={filterFlag ? eventsThatNeedHelp : events}
@@ -329,12 +358,13 @@ export default function Schedule() {
 					endAccessor="end"
 					onSelectEvent={handleSelectEvent}
 					style={{
-						height: '95%',
-						width: '95%',
+						height: '100%',
+						width: '100%',
 						backgroundColor: 'white',
 						color: 'black',
 						padding: 20,
-						borderRadius: '1.5rem',
+						borderRadius: '0.75rem',
+						border: '1px solid hsl(var(--color-border))',
 					}}
 					components={components}
 					defaultView="agenda"

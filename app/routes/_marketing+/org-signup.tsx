@@ -167,11 +167,29 @@ export default function OrgSignup() {
 	})
 
 	return (
-		<div className="flex min-h-full flex-col justify-center pb-32 pt-20">
+		<div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_2fr]">
+			{/* Left brand panel */}
+			<div className="hidden flex-col justify-between bg-indigo-600 p-12 text-white lg:flex">
+				<div className="text-h5 font-bold">TrotTrack</div>
+				<div className="space-y-4">
+					<p className="text-body-lg font-semibold">Get started in minutes.</p>
+					<ul className="space-y-2 text-body-sm text-indigo-100">
+						<li>✓ Create your organization and first admin account</li>
+						<li>✓ Invite volunteers and assign roles</li>
+						<li>✓ Schedule events and track animals</li>
+					</ul>
+				</div>
+				<p className="text-body-xs text-indigo-200">
+					Volunteer scheduling for animal-assisted therapy nonprofits.
+				</p>
+			</div>
+
+			{/* Right form panel */}
+			<div className="overflow-y-auto px-4 py-12">
 			<div className="mx-auto w-full max-w-2xl">
-				<div className="mb-8 text-center">
-					<h1 className="text-h1">Register Your Organization</h1>
-					<p className="mt-2 text-body-md text-muted-foreground">
+				<div className="mb-8">
+					<h1 className="text-h3">Register Your Organization</h1>
+					<p className="mt-2 text-body-sm text-muted-foreground">
 						Create your organization account and start coordinating volunteers.
 					</p>
 				</div>
@@ -258,6 +276,7 @@ export default function OrgSignup() {
 						</StatusButton>
 					</div>
 				</Form>
+			</div>
 			</div>
 		</div>
 	)
