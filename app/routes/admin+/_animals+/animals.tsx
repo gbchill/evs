@@ -96,14 +96,22 @@ export const loader = async ({ request }: DataFunctionArgs) => {
 export default function Animals() {
 	const data = useLoaderData<typeof loader>()
 	return (
-		<div className="container">
-			<h1 className="text-center text-5xl">Animals</h1>
-			<div className="flex flex-row-reverse">
+		<div className="container py-8">
+			<div className="mb-6 flex items-center justify-between">
+				<div>
+					<h1 className="text-h3">Animals</h1>
+					<p className="mt-1 text-body-sm text-muted-foreground">
+						{data.length} animal{data.length !== 1 ? 's' : ''} in your roster
+					</p>
+				</div>
 				<CreateAnimalDialog />
 			</div>
-			<div className="pt-2">
-				<DataTable columns={columns} data={data} />
-			</div>
+			<DataTable
+				columns={columns}
+				data={data}
+				emptyMessage="No animals added yet"
+				emptyDescription="Add your first animal to get started with event scheduling."
+			/>
 			<Outlet />
 		</div>
 	)
@@ -165,7 +173,7 @@ function CreateAnimalDialog() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button className="mt-5 flex gap-2" variant="outline">
+				<Button className="flex gap-2" variant="default">
 					<Icon className="text-body-md" name="plus" />
 					Add new animal
 				</Button>

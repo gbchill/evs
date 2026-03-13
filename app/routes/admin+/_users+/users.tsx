@@ -70,7 +70,12 @@ export default function Users() {
 				)}
 			</div>
 
-			<DataTable columns={columns} data={filtered} />
+			<DataTable
+				columns={columns}
+				data={filtered}
+				emptyMessage={search ? 'No volunteers match your search' : 'No volunteers yet'}
+				emptyDescription={search ? 'Try a different name or email.' : 'Volunteers will appear here once they join your organization.'}
+			/>
 			<div className="mt-8">
 				<SetSignupPasswordForm />
 			</div>
