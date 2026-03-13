@@ -1,6 +1,7 @@
 import { type LoaderArgs, json, useLoaderData, Outlet, Link } from '~/remix.ts'
 import { prisma } from '~/utils/db.server.ts'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { DataTable } from '~/components/ui/data_table.tsx'
 
 import { type ColumnDef } from '@tanstack/react-table'
@@ -21,7 +22,8 @@ import { SetSignupPasswordForm } from '~/routes/resources+/signup_password.tsx'
 
 export const loader = async ({ request }: LoaderArgs) => {
 	await requireAdmin(request)
-	return json(await prisma.user.findMany({ include: { roles: true } }))
+	const { orgId } = await requireOrgMember(request)
+	return json(await prisma.user.findMany({ where: { orgId }, include: { roles: true } }))
 }
 
 export default function Users() {

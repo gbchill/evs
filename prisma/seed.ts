@@ -95,7 +95,7 @@ async function seed() {
 			const user = await prisma.user.create({
 				data: {
 					...userData,
-					orgId: defaultOrg.id,
+					org: { connect: { id: defaultOrg.id } },
 					password: {
 						create: createPassword(userData.username),
 					},
@@ -126,7 +126,7 @@ async function seed() {
 			email: 'kody@kcd.dev',
 			username: 'kody',
 			name: 'Kody',
-			orgId: defaultOrg.id,
+			org: { connect: { id: defaultOrg.id } },
 			roles: { connect: { id: adminRole.id } },
 			image: {
 				create: {
@@ -159,7 +159,7 @@ async function seed() {
 			email: 'bob@not.admin',
 			username: 'bob',
 			name: 'Bob',
-			orgId: defaultOrg.id,
+			org: { connect: { id: defaultOrg.id } },
 			image: {
 				create: {
 					contentType: 'image/png',
@@ -190,7 +190,7 @@ async function seed() {
 			email: 'isabelle@is.instructor',
 			username: 'isabelle',
 			name: 'Isabelle',
-			orgId: defaultOrg.id,
+			org: { connect: { id: defaultOrg.id } },
 			roles: { connect: { id: instructorRole.id } },
 			image: {
 				create: {
@@ -223,7 +223,7 @@ async function seed() {
 			const horse = await prisma.horse.create({
 				data: {
 					...horseData,
-					orgId: defaultOrg.id,
+					org: { connect: { id: defaultOrg.id } },
 					image: {
 						create: {
 							contentType: 'image/jpeg',
@@ -259,7 +259,7 @@ async function seed() {
 			const event = await prisma.event.create({
 				data: {
 					...eventData,
-					orgId: defaultOrg.id,
+					org: { connect: { id: defaultOrg.id } },
 				},
 			})
 			return event

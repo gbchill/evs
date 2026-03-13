@@ -19,6 +19,7 @@ import { useFetcher, Outlet } from '@remix-run/react'
 import { z } from 'zod'
 import { parse } from '@conform-to/zod'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { formatPhone } from '~/utils/phone-format.ts'
 import invariant from 'tiny-invariant'
 import {
@@ -31,10 +32,12 @@ import type { HorseAssignment } from '@prisma/client'
 
 export async function loader({ request, params }: DataFunctionArgs) {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	const id = params.eventId
-	const event = await prisma.event.findUnique({
+	const event = await prisma.event.findFirst({
 		where: {
 			id,
+			orgId,
 		},
 		include: {
 			instructors: true,

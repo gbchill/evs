@@ -18,7 +18,7 @@ import {
 import { useMemo, useState } from 'react'
 
 import { prisma } from '~/utils/db.server.ts'
-import { requireUserId } from '~/utils/auth.server.ts'
+import { requireUserId, requireOrgMember } from '~/utils/auth.server.ts'
 import { useUser } from '~/utils/user.ts'
 import { Button } from '~/components/ui/button.tsx'
 import {
@@ -86,13 +86,13 @@ const localizer = dateFnsLocalizer({
 })
 
 export const loader = async ({ request }: LoaderArgs) => {
-	await requireUserId(request)
+	const { orgId } = await requireOrgMember(request)
 	const isAdmin = await userHasAdminPermissions(request)
 	const instructors = await prisma.user.findMany({
-		where: { roles: { some: { name: 'instructor' } } },
+		where: { orgId, roles: { some: { name: 'instructor' } } },
 	})
 
-	let eventsWhere: { isPrivate?: boolean } = { isPrivate: false }
+	let eventsWhere: { orgId: string; isPrivate?: boolean } = { orgId, isPrivate: false }
 	if (isAdmin) delete eventsWhere.isPrivate
 	let events = await prisma.event.findMany({
 		where: eventsWhere,
@@ -118,7 +118,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 	return json({
 		events,
-		horses: await prisma.horse.findMany(),
+		horses: await prisma.horse.findMany({ where: { orgId } }),
 		instructors,
 	})
 }
@@ -158,6 +158,7 @@ const createEventSchema = z.object({
 
 export async function action({ request }: ActionArgs) {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	const body = await request.formData()
 	const submission = formParse(body, {
 		schema: () => {
@@ -236,6 +237,7 @@ export async function action({ request }: ActionArgs) {
 					title,
 					start: dateTime.start,
 					end: dateTime.end,
+					orgId,
 					instructors: {
 						connect: instructorData,
 					},

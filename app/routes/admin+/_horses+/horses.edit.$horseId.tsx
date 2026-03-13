@@ -28,6 +28,7 @@ import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert.tsx'
 import { AlertTriangle } from 'lucide-react'
 import { json, type DataFunctionArgs } from '@remix-run/node'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { prisma } from '~/utils/db.server.ts'
 import invariant from 'tiny-invariant'
 import { conform, useForm } from '@conform-to/react'
@@ -39,8 +40,9 @@ import { format, add } from 'date-fns'
 
 export const loader = async ({ request, params }: DataFunctionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.horseId, 'Missing horse id')
-	const horse = await prisma.horse.findUnique({ where: { id: params.horseId } })
+	const horse = await prisma.horse.findFirst({ where: { id: params.horseId, orgId } })
 	if (!horse) {
 		throw new Response('not found', { status: 404 })
 	}
@@ -49,6 +51,7 @@ export const loader = async ({ request, params }: DataFunctionArgs) => {
 
 export async function action({ request, params }: DataFunctionArgs) {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.horseId, 'Missing horse id')
 	const formData = await request.formData()
 	const submission = await parse(formData, {
@@ -79,6 +82,11 @@ export async function action({ request, params }: DataFunctionArgs) {
 		cooldownEndDate,
 	} = submission.value
 
+	// Verify the horse belongs to the admin's org before updating
+	const existingHorse = await prisma.horse.findFirst({ where: { id: params.horseId, orgId } })
+	if (!existingHorse) {
+		throw new Response('not found', { status: 404 })
+	}
 	const updatedHorse = await prisma.horse.update({
 		where: { id: params.horseId },
 		data: {

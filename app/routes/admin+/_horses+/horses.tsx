@@ -10,6 +10,7 @@ import {
 } from '~/remix.ts'
 import { prisma } from '~/utils/db.server.ts'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { DataTable } from '~/components/ui/data_table.tsx'
 import { z } from 'zod'
 import {
@@ -94,7 +95,8 @@ export const horseFormSchema = z
 
 export const loader = async ({ request }: DataFunctionArgs) => {
 	await requireAdmin(request)
-	return json(await prisma.horse.findMany())
+	const { orgId } = await requireOrgMember(request)
+	return json(await prisma.horse.findMany({ where: { orgId } }))
 }
 
 export default function Horses() {
@@ -115,6 +117,7 @@ export default function Horses() {
 
 export const action = async ({ request }: ActionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	const formData = await request.formData()
 	const submission = parse(formData, { schema: horseFormSchema })
 	if (!submission.value) {
@@ -126,6 +129,7 @@ export const action = async ({ request }: ActionArgs) => {
 			name: submission.value.name,
 			notes: submission.value.notes,
 			status: submission.value.status,
+			orgId,
 		},
 	})
 

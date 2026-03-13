@@ -20,6 +20,7 @@ import {
 } from '@remix-run/react'
 import { json, type DataFunctionArgs } from '@remix-run/node'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { prisma } from '~/utils/db.server.ts'
 import invariant from 'tiny-invariant'
 import { conform, useForm } from '@conform-to/react'
@@ -31,8 +32,9 @@ import { z } from 'zod'
 
 export const loader = async ({ request, params }: DataFunctionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.horseId, 'Missing horse id')
-	const horse = await prisma.horse.findUnique({ where: { id: params.horseId } })
+	const horse = await prisma.horse.findFirst({ where: { id: params.horseId, orgId } })
 	if (!horse) {
 		throw new Response('not found', { status: 404 })
 	}
@@ -50,9 +52,10 @@ export const deleteHorseFormSchema = z.object({
 
 export async function action({ request, params }: DataFunctionArgs) {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.horseId, 'Missing horse id')
 	const formData = await request.formData()
-	const horse = await prisma.horse.findUnique({ where: { id: params.horseId } })
+	const horse = await prisma.horse.findFirst({ where: { id: params.horseId, orgId } })
 	if (!horse) {
 		throw new Response('not found', { status: 404 })
 	}
