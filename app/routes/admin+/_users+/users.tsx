@@ -98,9 +98,9 @@ export const columns: ColumnDef<UserWithRole>[] = [
 		},
 	},
 	{
-		header: 'horse leader',
+		header: 'animal handler',
 		accessorFn: (row) => {
-			const hasRole = row.roles.find(r => r.name === 'horseLeader')
+			const hasRole = row.roles.find(r => r.name === 'animalHandler')
 			return hasRole ? 'Yes' : 'No'
 		},
 	},

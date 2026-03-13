@@ -12,7 +12,7 @@ import { Icon } from '~/components/ui/icon.tsx'
 import {
 	volunteerTypes,
 	type UserData,
-	type HorseData,
+	type AnimalData,
 	type EventWithVolunteers,
 } from '~/data.ts'
 import { useMemo, useState } from 'react'
@@ -44,7 +44,7 @@ import {
 import { parse as formParse } from '@conform-to/zod'
 import { z } from 'zod'
 
-import { HorseListbox, InstructorListbox } from '~/components/listboxes.tsx'
+import { AnimalListbox, InstructorListbox } from '~/components/listboxes.tsx'
 import { addMinutes, isAfter } from 'date-fns'
 import { useFetcher, useFormAction, useNavigation } from '@remix-run/react'
 import { useResetCallback } from '~/utils/misc.ts'
@@ -68,8 +68,8 @@ import { Separator } from '~/components/ui/separator.tsx'
 import { CheckboxField, Field, DatePickerField } from '~/components/forms.tsx'
 import { checkboxSchema, optionalDateSchema } from '~/utils/zod-extensions.ts'
 import {
-	horseDateConflicts,
-	renderHorseConflictMessage,
+	animalDateConflicts,
+	renderAnimalConflictMessage,
 } from '~/utils/cooldown-functions.ts'
 import { EventAgenda } from '~/components/EventAgenda.tsx'
 
@@ -97,12 +97,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 	let events = await prisma.event.findMany({
 		where: eventsWhere,
 		include: {
-			horses: true,
+			animals: true,
 			instructors: true,
 			cleaningCrew: true,
 			lessonAssistants: true,
 			sideWalkers: true,
-			horseLeaders: true,
+			animalHandlers: true,
 		},
 	})
 
@@ -118,12 +118,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 	return json({
 		events,
-		horses: await prisma.horse.findMany({ where: { orgId } }),
+		animals: await prisma.animal.findMany({ where: { orgId } }),
 		instructors,
 	})
 }
 
-const horseSchema = z.object({
+const animalSchema = z.object({
 	id: z.string(),
 	name: z.string(),
 	cooldownStartDate: optionalDateSchema,
@@ -147,12 +147,12 @@ const createEventSchema = z.object({
 		.string()
 		.regex(new RegExp(/^\d{2}:\d{2}$/g), 'Invalid start time'),
 	duration: z.coerce.number().gt(0),
-	horses: z.array(horseSchema).optional(),
+	animals: z.array(animalSchema).optional(),
 	instructor: instructorSchema,
 	cleaningCrewReq: z.coerce.number().gt(-1),
 	lessonAssistantsReq: z.coerce.number().gt(-1),
 	sideWalkersReq: z.coerce.number().gt(-1),
-	horseLeadersReq: z.coerce.number().gt(-1),
+	animalHandlersReq: z.coerce.number().gt(-1),
 	isPrivate: checkboxSchema(),
 })
 
@@ -183,7 +183,7 @@ export async function action({ request }: ActionArgs) {
 	const cleaningCrewReq = submission.value.cleaningCrewReq
 	const lessonAssistantsReq = submission.value.lessonAssistantsReq
 	const sideWalkersReq = submission.value.sideWalkersReq
-	const horseLeadersReq = submission.value.horseLeadersReq
+	const animalHandlersReq = submission.value.animalHandlersReq
 	const isPrivate = submission.value.isPrivate
 
 	const dateTimesArray = datesArray.map(date => {
@@ -193,27 +193,27 @@ export async function action({ request }: ActionArgs) {
 		return { start, end }
 	})
 
-	// Check that horses selected are not in cooldown period
-	const horses = submission.value.horses
-	if (horses) {
-		interface horseDateConflict {
+	// Check that animals selected are not in cooldown period
+	const animals = submission.value.animals
+	if (animals) {
+		interface animalDateConflict {
 			name: String
 			conflictingDatesArr: Array<Date>
 		}
-		let errorHorseArr: Array<horseDateConflict> = []
-		horses.forEach(horse => {
-			const conflicts = horseDateConflicts(
-				horse,
+		let errorAnimalArr: Array<animalDateConflict> = []
+		animals.forEach(animal => {
+			const conflicts = animalDateConflicts(
+				animal,
 				dateTimesArray.map(date => date.start),
 			)
-			if (conflicts) errorHorseArr.push(conflicts)
+			if (conflicts) errorAnimalArr.push(conflicts)
 		})
 
-		const message = renderHorseConflictMessage(errorHorseArr)
+		const message = renderAnimalConflictMessage(errorAnimalArr)
 
-		if (errorHorseArr.length > 0) {
+		if (errorAnimalArr.length > 0) {
 			return json({
-				status: 'horse-error',
+				status: 'animal-error',
 				submission,
 				message,
 			} as const)
@@ -225,7 +225,7 @@ export async function action({ request }: ActionArgs) {
 	if (instructorId) {
 		instructorData = [{ id: instructorId }]
 	}
-	const horseIds = submission.value.horses?.map(e => {
+	const animalIds = submission.value.animals?.map(e => {
 		return { id: e.id }
 	})
 
@@ -241,13 +241,13 @@ export async function action({ request }: ActionArgs) {
 					instructors: {
 						connect: instructorData,
 					},
-					horses: {
-						connect: horseIds ?? [],
+					animals: {
+						connect: animalIds ?? [],
 					},
 					cleaningCrewReq,
 					lessonAssistantsReq,
 					sideWalkersReq,
-					horseLeadersReq,
+					animalHandlersReq,
 					isPrivate,
 				},
 			}),
@@ -267,7 +267,7 @@ export async function action({ request }: ActionArgs) {
 export default function Schedule() {
 	const data = useLoaderData<typeof loader>()
 	var events = data.events
-	const horses = data.horses
+	const animals = data.animals
 	const instructors = data.instructors
 	const user = useUser()
 	const userIsAdmin = user.roles.find(role => role.name === 'admin')
@@ -281,7 +281,7 @@ export default function Schedule() {
 			event.start.valueOf() > new Date().valueOf() &&
 			(event.cleaningCrewReq > event.cleaningCrew.length ||
 				event.lessonAssistantsReq > event.lessonAssistants.length ||
-				event.horseLeadersReq > event.horseLeaders.length ||
+				event.animalHandlersReq > event.animalHandlers.length ||
 				event.sideWalkersReq > event.sideWalkers.length)
 		)
 	})
@@ -315,7 +315,7 @@ export default function Schedule() {
 			</div>
 
 			{userIsAdmin ? (
-				<CreateEventDialog horses={horses} instructors={instructors} />
+				<CreateEventDialog animals={animals} instructors={instructors} />
 			) : null}
 
 			<div className="flex h-screen w-full justify-center">
@@ -323,7 +323,7 @@ export default function Schedule() {
 					localizer={localizer}
 					events={filterFlag ? eventsThatNeedHelp : events}
 					tooltipAccessor={event =>
-						`Cleaning Crew: ${event.cleaningCrew.length} / ${event.cleaningCrewReq}\nSidewalkers: ${event.sideWalkers.length} / ${event.sideWalkersReq}\nLesson Assistants: ${event.lessonAssistants.length} / ${event.lessonAssistantsReq}\nHorse Leaders: ${event.horseLeaders.length} / ${event.horseLeadersReq}`
+						`Cleaning Crew: ${event.cleaningCrew.length} / ${event.cleaningCrewReq}\nSidewalkers: ${event.sideWalkers.length} / ${event.sideWalkersReq}\nLesson Assistants: ${event.lessonAssistants.length} / ${event.lessonAssistantsReq}\nAnimal Handlers: ${event.animalHandlers.length} / ${event.animalHandlersReq}`
 					}
 					startAccessor="start"
 					endAccessor="end"
@@ -362,8 +362,8 @@ function RegistrationDialogue({ selectedEventId, events }: RegistrationProps) {
 	const userIsAdmin = user.roles.find(role => role.name === 'admin')
 	const userIsLessonAssistant =
 		user.roles.find(role => role.name === 'lessonAssistant') != undefined
-	const userIsHorseLeader =
-		user.roles.find(role => role.name === 'horseLeader') != undefined
+	const userIsAnimalHandler =
+		user.roles.find(role => role.name === 'animalHandler') != undefined
 
 	const isSubmitting = registrationFetcher.state === 'submitting'
 
@@ -392,7 +392,7 @@ function RegistrationDialogue({ selectedEventId, events }: RegistrationProps) {
 	const helpNeeded =
 		calEvent.cleaningCrewReq > calEvent.cleaningCrew.length ||
 		calEvent.lessonAssistantsReq > calEvent.lessonAssistants.length ||
-		calEvent.horseLeadersReq > calEvent.horseLeaders.length ||
+		calEvent.animalHandlersReq > calEvent.animalHandlers.length ||
 		calEvent.sideWalkersReq > calEvent.sideWalkers.length
 
 	const now = new Date()
@@ -463,8 +463,8 @@ function RegistrationDialogue({ selectedEventId, events }: RegistrationProps) {
 									let hasPermissions = true
 									if (volunteerType.field == 'lessonAssistants') {
 										hasPermissions = userIsLessonAssistant
-									} else if (volunteerType.field == 'horseLeaders') {
-										hasPermissions = userIsHorseLeader
+									} else if (volunteerType.field == 'animalHandlers') {
+										hasPermissions = userIsAnimalHandler
 									}
 
 									return (
@@ -565,11 +565,11 @@ function RegistrationDialogue({ selectedEventId, events }: RegistrationProps) {
 }
 
 interface CreateEventDialogProps {
-	horses: HorseData[]
+	animals: AnimalData[]
 	instructors: UserData[]
 }
 
-function CreateEventDialog({ horses, instructors }: CreateEventDialogProps) {
+function CreateEventDialog({ animals, instructors }: CreateEventDialogProps) {
 	const [open, setOpen] = useState(false)
 
 	return (
@@ -590,7 +590,7 @@ function CreateEventDialog({ horses, instructors }: CreateEventDialogProps) {
 					</DialogDescription>
 				</DialogHeader>
 				<CreateEventForm
-					horses={horses}
+					animals={animals}
 					instructors={instructors}
 					doneCallback={() => setOpen(false)}
 				/>
@@ -609,7 +609,7 @@ interface EventFormProps extends CreateEventDialogProps {
 }
 
 function CreateEventForm({
-	horses,
+	animals,
 	instructors,
 	doneCallback,
 }: EventFormProps) {
@@ -629,7 +629,7 @@ function CreateEventForm({
 		lastSubmission: actionData?.submission,
 		defaultValue: {
 			cleaningCrewReq: 0,
-			horseLeadersReq: 0,
+			animalHandlersReq: 0,
 			sideWalkersReq: 0,
 			lessonAssistantsReq: 0,
 		},
@@ -648,11 +648,11 @@ function CreateEventForm({
 			if (doneCallback) {
 				doneCallback()
 			}
-		} else if (actionData.status === 'horse-error') {
+		} else if (actionData.status === 'animal-error') {
 			toast({
 				variant: 'destructive',
 				title:
-					'The following horses are scheduled for cooldown on the selected dates:',
+					'The following animals are scheduled for cooldown on the selected dates:',
 				description: actionData.message,
 			})
 		} else {
@@ -712,11 +712,11 @@ function CreateEventForm({
 				</div>
 				<Separator className="col-span-2 border" />
 				<div className="col-span-2 sm:col-span-1">
-					<Label htmlFor="horses">Horses</Label>
-					<HorseListbox
-						name="horses"
-						horses={horses}
-						error={actionData?.status === 'horse-error' ?? false}
+					<Label htmlFor="animals">Animals</Label>
+					<AnimalListbox
+						name="animals"
+						animals={animals}
+						error={actionData?.status === 'animal-error' ?? false}
 					/>
 				</div>
 				<div className="col-span-2 sm:col-span-1">
@@ -765,15 +765,15 @@ function CreateEventForm({
 				<Field
 					className="col-span-2 sm:col-span-1"
 					labelProps={{
-						htmlFor: fields.horseLeadersReq.id,
-						children: 'Horse leaders needed',
+						htmlFor: fields.animalHandlersReq.id,
+						children: 'Animal handlers needed',
 					}}
 					inputProps={{
-						...conform.input(fields.horseLeadersReq),
+						...conform.input(fields.animalHandlersReq),
 						type: 'number',
 						min: 0,
 					}}
-					errors={fields.horseLeadersReq.errors}
+					errors={fields.animalHandlersReq.errors}
 				/>
 				<CheckboxField
 					className="col-span-2"
