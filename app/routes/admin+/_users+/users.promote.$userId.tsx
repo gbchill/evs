@@ -18,6 +18,7 @@ import {
 	useNavigation,
 } from '@remix-run/react'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { prisma } from '~/utils/db.server.ts'
 import { StatusButton } from '~/components/ui/status-button.tsx'
 import { Button } from '~/components/ui/button.tsx'
@@ -30,9 +31,10 @@ import { redirectWithToast } from '~/utils/flash-session.server.ts'
 
 export const loader = async ({ request, params }: DataFunctionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.userId, 'Missing user id')
-	const user = await prisma.user.findUnique({
-		where: { id: params.userId },
+	const user = await prisma.user.findFirst({
+		where: { id: params.userId, orgId },
 		include: {
 			roles: true,
 		},
@@ -49,6 +51,7 @@ const promoteSchema = z.object({
 
 export const action = async ({ request, params }: DataFunctionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.userId, 'Missing user id')
 	const formData = await request.formData()
 	const submission = parse(formData, { schema: promoteSchema })
@@ -67,6 +70,9 @@ export const action = async ({ request, params }: DataFunctionArgs) => {
 			variant: 'destructive',
 		})
 	}
+
+	const targetUser = await prisma.user.findFirst({ where: { id: params.userId, orgId } })
+	if (!targetUser) throw new Response('not found', { status: 404 })
 
 	let user
 	if (submission.value._action === 'promote') {

@@ -26,6 +26,7 @@ import {
 } from '@remix-run/react'
 import { json, type DataFunctionArgs } from '@remix-run/node'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { prisma } from '~/utils/db.server.ts'
 import invariant from 'tiny-invariant'
 import { conform, useFieldset, useForm } from '@conform-to/react'
@@ -58,15 +59,16 @@ const editUserSchema = z.object({
 	yearsOfExperience: yearsOfExperienceSchema,
 	isInstructor: checkboxSchema(),
 	isLessonAssistant: checkboxSchema(),
-	isHorseLeader: checkboxSchema(),
+	isAnimalHandler: checkboxSchema(),
 	notes: z.string().optional(),
 })
 
 export const loader = async ({ request, params }: DataFunctionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.userId, 'Missing user id')
-	const user = await prisma.user.findUnique({
-		where: { id: params.userId },
+	const user = await prisma.user.findFirst({
+		where: { id: params.userId, orgId },
 		include: { roles: true },
 	})
 	if (!user) {
@@ -77,6 +79,7 @@ export const loader = async ({ request, params }: DataFunctionArgs) => {
 
 export async function action({ request, params }: DataFunctionArgs) {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.userId, 'Missing user id')
 	const formData = await request.formData()
 	const submission = await parse(formData, {
@@ -106,7 +109,7 @@ export async function action({ request, params }: DataFunctionArgs) {
 		height,
 		yearsOfExperience,
 		isInstructor,
-		isHorseLeader,
+		isAnimalHandler,
 		isLessonAssistant,
 		notes,
 	} = submission.value
@@ -118,7 +121,7 @@ export async function action({ request, params }: DataFunctionArgs) {
 	} else {
 		roleDisconnectArray.push({ name: 'instructor' })
 	}
-	if (isHorseLeader) {
+	if (isAnimalHandler) {
 		roleConnectArray.push({ name: 'animalHandler' })
 	} else {
 		roleDisconnectArray.push({ name: 'animalHandler' })
@@ -213,14 +216,14 @@ export default function EditUser() {
 	const { heightFeet, heightInches } = useFieldset(form.ref, fields.height)
 
 	let isLessonAssistant = false
-	let isHorseLeader = false
+	let isAnimalHandler = false
 	let isInstructor = false
 	for (const role of data.user?.roles) {
 		if (role.name === 'lessonAssistant') {
 			isLessonAssistant = true
 		}
 		if (role.name === 'animalHandler') {
-			isHorseLeader = true
+			isAnimalHandler = true
 		}
 		if (role.name === 'instructor') {
 			isInstructor = true
@@ -413,16 +416,16 @@ export default function EditUser() {
 							/>
 							<CheckboxField
 								labelProps={{
-									htmlFor: fields.isHorseLeader.id,
+									htmlFor: fields.isAnimalHandler.id,
 									children: 'Animal Handler',
 								}}
 								buttonProps={{
-									...conform.input(fields.isHorseLeader, {
+									...conform.input(fields.isAnimalHandler, {
 										type: 'checkbox',
 									}),
-									defaultChecked: isHorseLeader,
+									defaultChecked: isAnimalHandler,
 								}}
-								errors={fields.isHorseLeader.errors}
+								errors={fields.isAnimalHandler.errors}
 							/>
 						</div>
 					</div>
