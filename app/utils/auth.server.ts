@@ -198,6 +198,55 @@ export async function verifyLogin(
 	return { id: userWithPassword.id }
 }
 
+export async function signupOrg({
+	orgName,
+	orgSlug,
+	animalType,
+	email,
+	username,
+	name,
+	password,
+}: {
+	orgName: string
+	orgSlug: string
+	animalType: string
+	email: string
+	username: string
+	name: string
+	password: string
+}) {
+	const hashedPassword = await getPasswordHash(password)
+
+	const adminRole = await prisma.role.findFirst({ where: { name: 'admin' } })
+
+	const session = await prisma.session.create({
+		data: {
+			expirationDate: new Date(Date.now() + SESSION_EXPIRATION_TIME),
+			user: {
+				create: {
+					email,
+					username,
+					name,
+					password: {
+						create: { hash: hashedPassword },
+					},
+					roles: adminRole ? { connect: { id: adminRole.id } } : undefined,
+					org: {
+						create: {
+							name: orgName,
+							slug: orgSlug,
+							animalType,
+						},
+					},
+				},
+			},
+		},
+		select: { id: true, expirationDate: true, userId: true },
+	})
+
+	return session
+}
+
 export async function verifySignupPassword(password: string) {
 	const signUpPassword = await prisma.signupPassword.findFirst();
 
