@@ -23,6 +23,7 @@ import {
 import { Icon } from '~/components/ui/icon.tsx'
 import { prisma } from '~/utils/db.server.ts'
 import { requireAdmin } from '~/utils/permissions.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { AnimalListbox, InstructorListbox } from '~/components/listboxes.tsx'
 import { addMinutes, differenceInMinutes, format, add } from 'date-fns'
 import { redirectWithToast } from '~/utils/flash-session.server.ts'
@@ -44,14 +45,15 @@ import { useResetCallback } from '~/utils/misc.ts'
 
 export const loader = async ({ request, params }: DataFunctionArgs) => {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.eventId, 'Missing event id')
 
 	const instructors = await prisma.user.findMany({
-		where: { roles: { some: { name: 'instructor' } } },
+		where: { orgId, roles: { some: { name: 'instructor' } } },
 	})
-	const animals = await prisma.animal.findMany()
-	const event = await prisma.event.findUnique({
-		where: { id: params.eventId },
+	const animals = await prisma.animal.findMany({ where: { orgId } })
+	const event = await prisma.event.findFirst({
+		where: { id: params.eventId, orgId },
 		include: {
 			animals: true,
 			instructors: true,
@@ -94,6 +96,7 @@ const editEventSchema = z.object({
 
 export async function action({ request, params }: DataFunctionArgs) {
 	await requireAdmin(request)
+	const { orgId } = await requireOrgMember(request)
 	invariant(params.eventId, 'Missing event id')
 	const formData = await request.formData()
 	const submission = parse(formData, {
@@ -152,6 +155,9 @@ export async function action({ request, params }: DataFunctionArgs) {
 	const animalHandlersReq = submission.value.animalHandlersReq
 
 	const isPrivate = submission.value.isPrivate
+
+	const existingEvent = await prisma.event.findFirst({ where: { id: params.eventId, orgId } })
+	if (!existingEvent) throw new Response('not found', { status: 404 })
 
 	const updatedEvent = await prisma.event.update({
 		where: {
