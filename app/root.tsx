@@ -179,15 +179,6 @@ function App() {
 						<div className="flex-1">
 							<Outlet />
 						</div>
-						<footer className="border-t border-border py-6">
-							<div className="container mx-auto flex flex-wrap items-center justify-between gap-4 px-4 text-sm text-muted-foreground">
-								<span className="font-semibold text-sidebar-active">The Barn</span>
-								<div className="flex gap-4">
-									<Link to="/tos" className="hover:underline">Terms of Service</Link>
-									<Link to="/privacy" className="hover:underline">Privacy Policy</Link>
-								</div>
-							</div>
-						</footer>
 					</div>
 				)}
 				<Confetti confetti={data.flash?.confetti} />

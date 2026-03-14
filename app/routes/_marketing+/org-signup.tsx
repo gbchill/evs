@@ -168,36 +168,26 @@ export default function OrgSignup() {
 
 	return (
 		<div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_2fr]">
-			{/* Left brand panel */}
-			<div className="hidden flex-col justify-between bg-indigo-600 p-12 text-white lg:flex">
-				<div className="text-h5 font-bold">The Barn</div>
-				<div className="space-y-4">
-					<p className="text-body-lg font-semibold">Get started in minutes.</p>
-					<ul className="space-y-2 text-body-sm text-indigo-100">
-						<li>✓ Create your organization and first admin account</li>
-						<li>✓ Invite volunteers and assign roles</li>
-						<li>✓ Schedule events and track animals</li>
-					</ul>
-				</div>
-				<p className="text-body-xs text-indigo-200">
-					Volunteer scheduling for animal-assisted therapy nonprofits.
-				</p>
-			</div>
+			{/* Left image panel */}
+			<div
+				className="hidden bg-indigo-600 bg-cover bg-center lg:block"
+				style={{ backgroundImage: 'url(/img/login-bg.jpg)' }}
+			/>
 
 			{/* Right form panel */}
-			<div className="overflow-y-auto px-4 py-12">
+			<div className="overflow-y-auto px-4 py-8">
 			<div className="mx-auto w-full max-w-2xl">
-				<div className="mb-8">
-					<h1 className="text-h3">Register Your Organization</h1>
-					<p className="mt-2 text-body-sm text-muted-foreground">
+				<div className="mb-4">
+					<h1 className="text-h4">Register Your Organization</h1>
+					<p className="mt-1 text-body-sm text-muted-foreground">
 						Create your organization account and start coordinating volunteers.
 					</p>
 				</div>
 
-				<Form method="post" {...form.props} className="space-y-6">
+				<Form method="post" {...form.props} className="space-y-4">
 					<div>
-						<h2 className="mb-4 text-lg font-semibold">Organization Details</h2>
-						<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<h2 className="mb-3 text-base font-semibold">Organization Details</h2>
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							<Field
 								className="sm:col-span-2"
 								labelProps={{ htmlFor: fields.orgName.id, children: 'Organization Name' }}
@@ -228,8 +218,8 @@ export default function OrgSignup() {
 					<Separator />
 
 					<div>
-						<h2 className="mb-4 text-lg font-semibold">Admin Account</h2>
-						<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<h2 className="mb-3 text-base font-semibold">Admin Account</h2>
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 							<Field
 								labelProps={{ htmlFor: fields.name.id, children: 'Your Name' }}
 								inputProps={conform.input(fields.name)}

@@ -43,19 +43,10 @@ export default function LoginPage() {
 	return (
 		<div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-2">
 			{/* Left brand panel */}
-			<div className="hidden flex-col justify-between bg-indigo-600 p-12 text-white lg:flex">
-				<div className="text-h5 font-bold">The Barn</div>
-				<div>
-					<blockquote className="text-body-lg font-medium leading-relaxed">
-						"Coordinating our therapy horse sessions used to take hours of emails.
-						Now it takes minutes."
-					</blockquote>
-					<p className="mt-4 text-indigo-200">— Program Coordinator, Tumbling T Ranch</p>
-				</div>
-				<p className="text-body-xs text-indigo-200">
-					Volunteer scheduling for animal-assisted therapy nonprofits.
-				</p>
-			</div>
+			<div
+				className="hidden bg-indigo-600 bg-cover bg-center lg:block"
+				style={{ backgroundImage: 'url(/img/login-bg.jpg)' }}
+			/>
 
 			{/* Right form panel */}
 			<div className="flex flex-col items-center justify-center px-4 py-16">
