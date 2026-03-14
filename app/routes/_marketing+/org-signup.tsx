@@ -170,7 +170,7 @@ export default function OrgSignup() {
 		<div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[1fr_2fr]">
 			{/* Left brand panel */}
 			<div className="hidden flex-col justify-between bg-indigo-600 p-12 text-white lg:flex">
-				<div className="text-h5 font-bold">TrotTrack</div>
+				<div className="text-h5 font-bold">The Barn</div>
 				<div className="space-y-4">
 					<p className="text-body-lg font-semibold">Get started in minutes.</p>
 					<ul className="space-y-2 text-body-sm text-indigo-100">

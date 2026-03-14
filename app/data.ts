@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client'
 
-export const siteName = 'TrotTrack Volunteer Portal'
-export const siteEmailAddress = 'hello@email.trottrack.org'
+export const siteName = 'The Barn Volunteer Portal'
+export const siteEmailAddress = 'hello@thebarnaz.com'
 export const siteEmailAddressWithName =
-	siteName + ' <hello@email.trottrack.org>'
-export const siteBaseUrl = 'https://trottrack.org'
+	siteName + ' <hello@thebarnaz.com>'
+export const siteBaseUrl = 'https://thebarnaz.com'
 
 export const volunteerTypes = [
 	{

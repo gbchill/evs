@@ -20,7 +20,7 @@ const ROUTE_PATH = '/resources/theme'
 
 const ThemeFormSchema = z.object({
 	redirectTo: z.string().optional(),
-	theme: z.enum(['system', 'light', 'dark']),
+	theme: z.enum(['light', 'dark']),
 })
 
 export async function action({ request }: DataFunctionArgs) {
@@ -79,9 +79,8 @@ export function ThemeSwitch({
 		},
 	})
 
-	const mode = userPreference ?? 'system'
-	const nextMode =
-		mode === 'system' ? 'light' : mode === 'light' ? 'dark' : 'system'
+	const mode = userPreference ?? 'light'
+	const nextMode = mode === 'light' ? 'dark' : 'light'
 	const modeLabel = {
 		light: (
 			<Icon name="sun">
@@ -91,11 +90,6 @@ export function ThemeSwitch({
 		dark: (
 			<Icon name="moon">
 				<span className="sr-only">Dark</span>
-			</Icon>
-		),
-		system: (
-			<Icon name="laptop">
-				<span className="sr-only">System</span>
 			</Icon>
 		),
 	}

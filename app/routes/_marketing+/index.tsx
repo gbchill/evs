@@ -10,7 +10,7 @@ export const meta: V2_MetaFunction = () => {
 		{
 			name: 'description',
 			content:
-				'TrotTrack helps animal-assisted therapy nonprofits coordinate volunteers, manage animals, and schedule events — all in one place.',
+				'The Barn helps animal-assisted therapy nonprofits coordinate volunteers, manage animals, and schedule events — all in one place.',
 		},
 	]
 }
@@ -48,16 +48,16 @@ export default function Index() {
 	return (
 		<div className="flex flex-col">
 			{/* Hero */}
-			<section className="flex flex-col items-center justify-center px-4 py-24 text-center sm:py-36">
+			<section className="flex flex-col items-center justify-center px-4 pb-72 pt-24 text-center sm:pb-96 sm:pt-36">
 				<span className="mb-4 inline-block rounded-full bg-indigo-50 px-4 py-1.5 text-body-xs font-semibold uppercase tracking-wider text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400">
-					Animal-Assisted Therapy Nonprofits
+					Volunteer Scheduling for Nonprofits
 				</span>
 				<h1 className="max-w-3xl text-h2 font-extrabold tracking-tight sm:text-h1">
 					Coordinate volunteers.{' '}
 					<span className="text-indigo-600">Simplify scheduling.</span>
 				</h1>
 				<p className="mx-auto mt-6 max-w-xl text-body-md text-muted-foreground">
-					TrotTrack gives your organization a dedicated space to manage events,
+					The Barn gives your organization a dedicated space to manage events,
 					track animals, and keep volunteers in sync — with zero spreadsheets.
 				</p>
 				<div className="mt-10 flex flex-wrap justify-center gap-4">

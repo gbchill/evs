@@ -44,7 +44,7 @@ export default function LoginPage() {
 		<div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-2">
 			{/* Left brand panel */}
 			<div className="hidden flex-col justify-between bg-indigo-600 p-12 text-white lg:flex">
-				<div className="text-h5 font-bold">TrotTrack</div>
+				<div className="text-h5 font-bold">The Barn</div>
 				<div>
 					<blockquote className="text-body-lg font-medium leading-relaxed">
 						"Coordinating our therapy horse sessions used to take hours of emails.

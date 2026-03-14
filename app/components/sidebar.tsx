@@ -26,7 +26,7 @@ export function Sidebar({
 			{/* Logo */}
 			<div className="flex h-16 shrink-0 items-center border-b border-sidebar-border px-5">
 				<Link to="/" className="flex items-center gap-2">
-					<span className="text-h6 font-bold text-sidebar-active">TrotTrack</span>
+					<span className="text-h6 font-bold text-sidebar-active">The Barn</span>
 				</Link>
 			</div>
 

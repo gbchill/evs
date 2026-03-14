@@ -68,7 +68,7 @@ export const links: LinksFunction = () => {
 
 export const meta: V2_MetaFunction = () => {
 	return [
-		{ title: 'TrotTrack' },
+		{ title: 'The Barn' },
 		{ name: 'description', content: 'Volunteer scheduling for animal-assisted therapy nonprofits' },
 	]
 }
@@ -164,9 +164,9 @@ function App() {
 					// Unauthenticated: top-nav layout
 					<div className="flex min-h-screen flex-col">
 						<header className="border-b border-border">
-							<div className="container mx-auto flex h-16 items-center justify-between px-4">
-								<Link to="/" className="text-h6 font-bold text-sidebar-active">
-									TrotTrack
+							<div className="flex h-16 w-full items-center justify-between px-8">
+								<Link to="/" className="text-h4 font-bold text-sidebar-active">
+									The Barn
 								</Link>
 								<div className="flex items-center gap-3">
 									<ThemeSwitch userPreference={data.requestInfo.session.theme} />
@@ -181,7 +181,7 @@ function App() {
 						</div>
 						<footer className="border-t border-border py-6">
 							<div className="container mx-auto flex flex-wrap items-center justify-between gap-4 px-4 text-sm text-muted-foreground">
-								<span className="font-semibold text-sidebar-active">TrotTrack</span>
+								<span className="font-semibold text-sidebar-active">The Barn</span>
 								<div className="flex gap-4">
 									<Link to="/tos" className="hover:underline">Terms of Service</Link>
 									<Link to="/privacy" className="hover:underline">Privacy Policy</Link>
