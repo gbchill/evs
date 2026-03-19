@@ -177,11 +177,13 @@ export async function getPasswordHash(password: string) {
 }
 
 export async function verifyLogin(
-	username: User['username'],
+	usernameOrEmail: string,
 	password: Password['hash'],
 ) {
-	const userWithPassword = await prisma.user.findUnique({
-		where: { username },
+	const userWithPassword = await prisma.user.findFirst({
+		where: {
+			OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+		},
 		select: { id: true, password: { select: { hash: true } } },
 	})
 
