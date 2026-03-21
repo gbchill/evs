@@ -1,12 +1,7 @@
 import { Link, Form, json, useLoaderData, useActionData } from '~/remix.ts'
 import type { ActionArgs, LoaderArgs } from '~/remix.ts'
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import format from 'date-fns/format/index.js'
 import parse from 'date-fns/parse/index.js'
-import startOfWeek from 'date-fns/startOfWeek/index.js'
-import getDay from 'date-fns/getDay/index.js'
-import enUS from 'date-fns/locale/en-US/index.js'
-import '~/styles/react-big-calendar.css'
 import { Icon } from '~/components/ui/icon.tsx'
 
 import {
@@ -15,7 +10,7 @@ import {
 	type AnimalData,
 	type EventWithVolunteers,
 } from '~/data.ts'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { prisma } from '~/utils/db.server.ts'
 import { requireUserId, requireOrgMember } from '~/utils/auth.server.ts'
@@ -73,17 +68,6 @@ import {
 } from '~/utils/cooldown-functions.ts'
 import { EventAgenda } from '~/components/EventAgenda.tsx'
 
-const locales = {
-	'en-US': enUS,
-}
-
-const localizer = dateFnsLocalizer({
-	format,
-	parse,
-	startOfWeek,
-	getDay,
-	locales,
-})
 
 export const loader = async ({ request }: LoaderArgs) => {
 	const { orgId } = await requireOrgMember(request)
@@ -291,15 +275,6 @@ export default function Schedule() {
 		setRegisterOpen(!registerOpen)
 	}
 
-	const components = useMemo(
-		() => ({
-			agenda: {
-				event: EventAgenda,
-			},
-		}),
-		[],
-	)
-
 	const upcomingCount = events.filter(e => e.start.valueOf() > new Date().valueOf()).length
 	const needsHelpCount = eventsThatNeedHelp.length
 
@@ -348,26 +323,9 @@ export default function Schedule() {
 
 			{/* Calendar */}
 			<div className="flex h-[calc(100vh-16rem)] w-full">
-				<Calendar
-					localizer={localizer}
+				<CustomAgenda
 					events={filterFlag ? eventsThatNeedHelp : events}
-					tooltipAccessor={event =>
-						`Cleaning Crew: ${event.cleaningCrew.length} / ${event.cleaningCrewReq}\nSidewalkers: ${event.sideWalkers.length} / ${event.sideWalkersReq}\nLesson Assistants: ${event.lessonAssistants.length} / ${event.lessonAssistantsReq}\nAnimal Handlers: ${event.animalHandlers.length} / ${event.animalHandlersReq}`
-					}
-					startAccessor="start"
-					endAccessor="end"
 					onSelectEvent={handleSelectEvent}
-					style={{
-						height: '100%',
-						width: '100%',
-						backgroundColor: 'hsl(var(--color-background))',
-						color: 'hsl(var(--color-foreground))',
-						padding: 20,
-						borderRadius: '0.75rem',
-						border: '1px solid hsl(var(--color-border))',
-					}}
-					components={components}
-					defaultView="agenda"
 				/>
 			</div>
 
@@ -377,6 +335,83 @@ export default function Schedule() {
 					events={events}
 				/>
 			</Dialog>
+		</div>
+	)
+}
+
+interface CustomAgendaProps {
+	events: EventWithVolunteers[]
+	onSelectEvent: (event: EventWithVolunteers) => void
+}
+
+function CustomAgenda({ events, onSelectEvent }: CustomAgendaProps) {
+	// Group events by date, sorted by start time
+	const grouped = (() => {
+		const sorted = [...events].sort(
+			(a, b) => new Date(a.start).valueOf() - new Date(b.start).valueOf(),
+		)
+		const groups: { date: Date; key: string; events: EventWithVolunteers[] }[] =
+			[]
+		for (const event of sorted) {
+			const key = format(new Date(event.start), 'yyyy-MM-dd')
+			const existing = groups.find(g => g.key === key)
+			if (existing) {
+				existing.events.push(event)
+			} else {
+				groups.push({ date: new Date(event.start), key, events: [event] })
+			}
+		}
+		return groups
+	})()
+
+	if (grouped.length === 0) {
+		return (
+			<div className="flex h-full w-full items-center justify-center rounded-xl border border-border bg-background">
+				<p className="text-muted-foreground">No upcoming events</p>
+			</div>
+		)
+	}
+
+	return (
+		<div className="flex h-full w-full flex-col overflow-hidden rounded-xl border border-border bg-background">
+			{/* Column headers */}
+			<div className="flex shrink-0 border-b border-border px-4 py-2 text-body-2xs font-semibold uppercase tracking-wider text-muted-foreground">
+				<span className="w-32 shrink-0">Date</span>
+				<span className="w-44 shrink-0">Time</span>
+				<span>Event</span>
+			</div>
+			{/* Scrollable body */}
+			<div className="flex-1 overflow-y-auto">
+				{grouped.map(({ date, key, events: dayEvents }) => (
+					<div key={key} className="border-b border-border last:border-b-0">
+						{dayEvents.map((event, idx) => (
+							<div
+								key={event.id}
+								onClick={() => onSelectEvent(event)}
+								className={`flex cursor-pointer items-start hover:bg-muted/20 ${
+									idx < dayEvents.length - 1
+										? 'border-b border-border/40'
+										: ''
+								}`}
+							>
+								{/* Date — only on first event of the group */}
+								<div className="w-32 shrink-0 px-4 py-3 text-sm font-medium">
+									{idx === 0 ? format(date, 'EEE MMM d') : ''}
+								</div>
+								{/* Time */}
+								<div className="w-44 shrink-0 px-4 py-3 text-sm text-muted-foreground">
+									{format(new Date(event.start), 'h:mm aaa')} –{' '}
+									{format(new Date(event.end), 'h:mm aaa')}
+								</div>
+								{/* Event content */}
+								<div className="flex-1 px-4 py-3">
+									<EventAgenda event={event} />
+								</div>
+							</div>
+						))}
+					</div>
+				))}
+			</div>
 		</div>
 	)
 }
