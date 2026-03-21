@@ -12,7 +12,7 @@ export const meta: V2_MetaFunction = () => {
 		{
 			name: 'description',
 			content:
-				'Read our Privacy Policy for thebarnaz.com, a nonprofit equestrian volunteer system that connects volunteers with equestrian organizations.',
+				'Read our Privacy Policy for thebarnaz.com, a nonprofit animal volunteer management system that connects volunteers with animal-assisted therapy organizations.',
 		},
 	]
 }

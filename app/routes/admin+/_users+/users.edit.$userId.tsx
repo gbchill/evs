@@ -351,7 +351,7 @@ export default function EditUser() {
 							className="col-span-6 sm:col-span-3"
 							labelProps={{
 								htmlFor: fields.yearsOfExperience.id,
-								children: 'Years of experience with horses',
+								children: 'Years of experience with animals',
 							}}
 							inputProps={{
 								...conform.input(fields.yearsOfExperience),

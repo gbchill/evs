@@ -12,7 +12,7 @@ export const meta: V2_MetaFunction = () => {
 		{
 			name: 'description',
 			content:
-				'Read or Terms of Service for thebarnaz.com, a nonprofit equestrian volunteer system that connects volunteers with equestrian organizations.',
+				'Read our Terms of Service for thebarnaz.com, a nonprofit animal volunteer management system that connects volunteers with animal-assisted therapy organizations.',
 		},
 	]
 }
@@ -36,8 +36,8 @@ export default function TermsOfServiceRoute() {
 			<section>
 				<h2>2. Description of Services</h2>
 				<p>
-					thebarnaz.com is a nonprofit equestrian volunteer system that connects
-					volunteers with equestrian organizations. Our services include
+					thebarnaz.com is a nonprofit animal volunteer management system that connects
+					volunteers with animal-assisted therapy organizations. Our services include
 					providing a platform for volunteers to find and sign up for volunteer
 					opportunities, and for organizations to manage their volunteer
 					programs.

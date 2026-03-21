@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Form, Link, NavLink } from '@remix-run/react'
+import { Cat } from 'lucide-react'
 import { Icon } from '~/components/ui/icon.tsx'
 import { ThemeSwitch } from '~/routes/resources+/theme/index.tsx'
 import { useUser } from '~/utils/user.ts'
@@ -47,7 +48,7 @@ export function Sidebar({
 							Users
 						</NavLink>
 						<NavLink to="/admin/animals" className={navLinkClass}>
-							<Icon name="horse" className="h-4 w-4 shrink-0" />
+							<Cat className="h-4 w-4 shrink-0" />
 							Animals
 						</NavLink>
 						<NavLink to="/admin/email" className={navLinkClass}>

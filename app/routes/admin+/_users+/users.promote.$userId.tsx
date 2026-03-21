@@ -145,7 +145,7 @@ export default function PromotionModal() {
 					<DialogDescription>
 						Proceeding will
 						{userIsAdmin ? " revoke this user's " : ' give this user '}
-						permission to edit user, horse, and event data.
+						permission to edit user, animal, and event data.
 					</DialogDescription>
 
 					<DialogFooter className="gap-2 sm:justify-center">
