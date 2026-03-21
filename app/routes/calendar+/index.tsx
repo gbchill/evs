@@ -360,8 +360,8 @@ export default function Schedule() {
 					style={{
 						height: '100%',
 						width: '100%',
-						backgroundColor: 'white',
-						color: 'black',
+						backgroundColor: 'hsl(var(--color-background))',
+						color: 'hsl(var(--color-foreground))',
 						padding: 20,
 						borderRadius: '0.75rem',
 						border: '1px solid hsl(var(--color-border))',
