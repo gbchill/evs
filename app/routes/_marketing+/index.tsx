@@ -1,5 +1,6 @@
 import type { V2_MetaFunction } from '@remix-run/node'
 import { Link } from '@remix-run/react'
+import { Calendar, Users, Footprints, Building2 } from 'lucide-react'
 import { Button } from '~/components/ui/button.tsx'
 import { useOptionalUser } from '~/utils/user.ts'
 import { siteName } from '~/data.ts'
@@ -17,25 +18,25 @@ export const meta: V2_MetaFunction = () => {
 
 const features = [
 	{
-		icon: '📅',
+		icon: <Calendar size={32} />,
 		title: 'Event Scheduling',
 		description:
 			'Create and manage therapy sessions, assign animals, and set volunteer slots with a visual calendar.',
 	},
 	{
-		icon: '🙋',
+		icon: <Users size={32} />,
 		title: 'Volunteer Management',
 		description:
 			'Volunteers self-register for roles. Admins see who is coming, assign handlers, and send bulk emails.',
 	},
 	{
-		icon: '🐾',
+		icon: <Footprints size={32} />,
 		title: 'Animal Tracking',
 		description:
 			'Track your animals, manage cooldown periods between events, and prevent scheduling conflicts automatically.',
 	},
 	{
-		icon: '🏢',
+		icon: <Building2 size={32} />,
 		title: 'Multi-Org Support',
 		description:
 			'Each organization gets its own isolated workspace. Data never crosses between organizations.',
@@ -90,7 +91,7 @@ export default function Index() {
 								key={f.title}
 								className="rounded-xl border border-border bg-background p-6"
 							>
-								<div className="mb-4 text-3xl">{f.icon}</div>
+								<div className="mb-4 text-foreground">{f.icon}</div>
 								<h3 className="mb-2 text-h6">{f.title}</h3>
 								<p className="text-body-xs text-muted-foreground">{f.description}</p>
 							</div>

@@ -89,8 +89,6 @@ export async function action({ request }: DataFunctionArgs) {
 	const isAdmin = userWithRoles?.roles.some(
 		r => r.name === 'admin' || r.name === 'superAdmin',
 	)
-	const defaultRedirect = isAdmin ? '/admin' : '/'
-
 	const cookieSession = await getSession(request.headers.get('cookie'))
 	const keyToSet = user2FA ? unverifiedSessionKey : authenticator.sessionKey
 	cookieSession.set(keyToSet, sessionId)

@@ -79,7 +79,7 @@ export const loader = async ({ request, params }: DataFunctionArgs) => {
 
 export async function action({ request, params }: DataFunctionArgs) {
 	await requireAdmin(request)
-	const { orgId } = await requireOrgMember(request)
+	await requireOrgMember(request)
 	invariant(params.userId, 'Missing user id')
 	const formData = await request.formData()
 	const submission = await parse(formData, {

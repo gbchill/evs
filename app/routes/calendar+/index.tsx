@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 
 import { prisma } from '~/utils/db.server.ts'
-import { requireUserId, requireOrgMember } from '~/utils/auth.server.ts'
+import { requireOrgMember } from '~/utils/auth.server.ts'
 import { useUser } from '~/utils/user.ts'
 import { Button } from '~/components/ui/button.tsx'
 import {

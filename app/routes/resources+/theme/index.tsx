@@ -20,7 +20,7 @@ const ROUTE_PATH = '/resources/theme'
 
 const ThemeFormSchema = z.object({
 	redirectTo: z.string().optional(),
-	theme: z.enum(['light', 'dark']),
+	theme: z.enum(['system', 'light', 'dark']),
 })
 
 export async function action({ request }: DataFunctionArgs) {

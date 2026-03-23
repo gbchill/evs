@@ -25,9 +25,8 @@ import {
 } from '~/components/ui/select.tsx'
 import { Label } from '~/components/ui/label.tsx'
 import { Separator } from '~/components/ui/separator.tsx'
-import { requireAnonymous, signupOrg } from '~/utils/auth.server.ts'
+import { requireAnonymous, signupOrg, authenticator } from '~/utils/auth.server.ts'
 import { commitSession, getSession } from '~/utils/session.server.ts'
-import { authenticator } from '~/utils/auth.server.ts'
 import {
 	nameSchema,
 	passwordSchema,

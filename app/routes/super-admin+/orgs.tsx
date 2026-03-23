@@ -1,5 +1,5 @@
 import { json, type DataFunctionArgs } from '@remix-run/node'
-import { useLoaderData, Link } from '@remix-run/react'
+import { useLoaderData } from '@remix-run/react'
 import { requireSuperAdmin } from '~/utils/permissions.server.ts'
 import { prisma } from '~/utils/db.server.ts'
 import { format } from 'date-fns'
