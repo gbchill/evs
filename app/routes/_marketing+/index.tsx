@@ -68,7 +68,7 @@ export default function Index() {
 						</Button>
 					) : (
 						<>
-							<Button asChild size="wide" className="bg-indigo-600 hover:bg-indigo-700">
+							<Button asChild size="wide" className="bg-indigo-600 hover:bg-indigo-700 text-white">
 								<Link to="/org-signup">Register Your Organization</Link>
 							</Button>
 							<Button asChild size="wide" variant="outline">
@@ -107,7 +107,7 @@ export default function Index() {
 					Set up your organization in minutes. No credit card required.
 				</p>
 				{!user && (
-					<Button asChild size="wide" className="bg-indigo-600 hover:bg-indigo-700">
+					<Button asChild size="wide" className="bg-indigo-600 hover:bg-indigo-700 text-white">
 						<Link to="/org-signup">Create Free Account</Link>
 					</Button>
 				)}
