@@ -174,19 +174,19 @@ export default function OrgSignup() {
 			/>
 
 			{/* Right form panel */}
-			<div className="overflow-y-auto px-4 py-8">
+			<div className="overflow-y-auto px-4 py-4">
 			<div className="mx-auto w-full max-w-2xl">
-				<div className="mb-4">
+				<div className="mb-2">
 					<h1 className="text-h4">Register Your Organization</h1>
 					<p className="mt-1 text-body-sm text-muted-foreground">
 						Create your organization account and start coordinating volunteers.
 					</p>
 				</div>
 
-				<Form method="post" {...form.props} className="space-y-4">
+				<Form method="post" {...form.props} className="space-y-2">
 					<div>
-						<h2 className="mb-3 text-base font-semibold">Organization Details</h2>
-						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+						<h2 className="mb-1 text-base font-semibold">Organization Details</h2>
+						<div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
 							<Field
 								className="sm:col-span-2"
 								labelProps={{ htmlFor: fields.orgName.id, children: 'Organization Name' }}
@@ -217,8 +217,8 @@ export default function OrgSignup() {
 					<Separator />
 
 					<div>
-						<h2 className="mb-3 text-base font-semibold">Admin Account</h2>
-						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+						<h2 className="mb-1 text-base font-semibold">Admin Account</h2>
+						<div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
 							<Field
 								labelProps={{ htmlFor: fields.name.id, children: 'Your Name' }}
 								inputProps={conform.input(fields.name)}

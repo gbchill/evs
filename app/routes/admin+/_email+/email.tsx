@@ -153,15 +153,21 @@ export default function Email() {
 	})
 
 	return (
-		<div>
-			<h1 className="text-center text-5xl">Email</h1>
-			<div className="container pt-10">
-				<Form
-					method="POST"
-					{...form.props}
-					className="mx-auto max-w-lg"
-					ref={formRef}
-				>
+		<div className="container py-8">
+			<div className="mb-6 flex items-center justify-between">
+				<div>
+					<h1 className="text-h3">Email</h1>
+					<p className="mt-1 text-body-sm text-muted-foreground">
+						Send bulk emails to volunteers by role.
+					</p>
+				</div>
+			</div>
+			<Form
+				method="POST"
+				{...form.props}
+				className="mx-auto max-w-lg"
+				ref={formRef}
+			>
 					<section className="flex flex-col gap-2">
 						<Label>To:</Label>
 						<CheckboxField
@@ -239,7 +245,6 @@ export default function Email() {
 						</StatusButton>
 					</section>
 				</Form>
-			</div>
 		</div>
 	)
 }
